@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "provenance": {
+    "source": "oracles/libpng/SPEC.md#Security property",
+    "independent": true
+  },
+  "exit_code": 1,
+  "stdout": {
+    "mode": "exact",
+    "base64": ""
+  },
+  "stderr": {
+    "mode": "exact",
+    "base64": "cG5nIGVycm9yCg=="
+  }
+}

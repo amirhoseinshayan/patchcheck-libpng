@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "target": "libpng",
+  "fixture": false,
+  "source": {
+    "repo": "..",
+    "base": "main",
+    "candidate": "main"
+  },
+  "builds": {
+    "release": {
+      "compiler": "gcc",
+      "flags": [
+        "-Wall",
+        "-fstack-protector-strong",
+        "-fPIE",
+        "-pie",
+        "-Wl,-z,relro,-z,now",
+        "-D_FORTIFY_SOURCE=2",
+        "-O2"
+      ],
+      "command": [
+        "{compiler}",
+        "{flags}",
+        "-Isrc",
+        "src/png.c",
+        "src/pngerror.c",
+        "src/pngget.c",
+        "src/pngmem.c",
+        "src/pngpread.c",
+        "src/pngread.c",
+        "src/pngrio.c",
+        "src/pngrtran.c",
+        "src/pngrutil.c",
+        "src/pngset.c",
+        "src/pngtrans.c",
+        "src/pngwio.c",
+        "src/pngwrite.c",
+        "src/pngwtran.c",
+        "src/pngwutil.c",
+        "src/pnginfo.c",
+        "-o",
+        "pnginfo",
+        "-lz",
+        "-lm"
+      ],
+      "binary": "pnginfo"
+    },
+    "sanitized": {
+      "compiler": "gcc",
+      "flags": [
+        "-Wall",
+        "-fstack-protector-strong",
+        "-fPIE",
+        "-pie",
+        "-Wl,-z,relro,-z,now",
+        "-O1",
+        "-g",
+        "-fno-omit-frame-pointer",
+        "-fsanitize=address,undefined"
+      ],
+      "command": [
+        "{compiler}",
+        "{flags}",
+        "-Isrc",
+        "src/png.c",
+        "src/pngerror.c",
+        "src/pngget.c",
+        "src/pngmem.c",
+        "src/pngpread.c",
+        "src/pngread.c",
+        "src/pngrio.c",
+        "src/pngrtran.c",
+        "src/pngrutil.c",
+        "src/pngset.c",
+        "src/pngtrans.c",
+        "src/pngwio.c",
+        "src/pngwrite.c",
+        "src/pngwtran.c",
+        "src/pngwutil.c",
+        "src/pnginfo.c",
+        "-o",
+        "pnginfo",
+        "-lz",
+        "-lm"
+      ],
+      "binary": "pnginfo",
+      "instrumentation": [
+        "__asan_init"
+      ]
+    },
+    "coverage": {
+      "compiler": "gcc",
+      "flags": [
+        "-Wall",
+        "-O0",
+        "-g",
+        "--coverage"
+      ],
+      "command": [
+        "{compiler}",
+        "{flags}",
+        "-Isrc",
+        "src/png.c",
+        "src/pngerror.c",
+        "src/pngget.c",
+        "src/pngmem.c",
+        "src/pngpread.c",
+        "src/pngread.c",
+        "src/pngrio.c",
+        "src/pngrtran.c",
+        "src/pngrutil.c",
+        "src/pngset.c",
+        "src/pngtrans.c",
+        "src/pngwio.c",
+        "src/pngwrite.c",
+        "src/pngwtran.c",
+        "src/pngwutil.c",
+        "src/pnginfo.c",
+        "-o",
+        "pnginfo",
+        "-lz",
+        "-lm"
+      ],
+      "binary": "pnginfo"
+    }
+  },
+  "input": {
+    "mode": "file",
+    "argv": [
+      "{binary}",
+      "{input}"
+    ],
+    "cwd": "."
+  },
+  "environment": {
+    "image": "patchcheck-framework:1.0",
+    "variables": {
+      "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1:symbolize=1",
+      "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+    }
+  },
+  "tools": {
+    "gcc": "gcc .*",
+    "g++": "g\\+\\+ .*",
+    "readelf": "GNU readelf .*",
+    "git": "git version .*",
+    "python3": "Python 3\\..*"
+  },
+  "limits": {
+    "wall_seconds": 5,
+    "cpu_seconds": 4,
+    "memory_mb": 512,
+    "pids": 32,
+    "output_bytes": 4194304,
+    "file_bytes": 16777216,
+    "build_wall_seconds": 180
+  },
+  "tests": [
+    {
+      "id": "valid-bit8",
+      "category": "valid",
+      "input": "../corpus/libpng/inputs/valid-bit8.png",
+      "oracle": "../oracles/libpng/valid-bit8.json",
+      "signature": null
+    },
+    {
+      "id": "boundary-bit8-max",
+      "category": "boundary",
+      "input": "../corpus/libpng/inputs/boundary-bit8-max.png",
+      "oracle": "../oracles/libpng/boundary-bit8-max.json",
+      "signature": null
+    },
+    {
+      "id": "invalid-no-plte",
+      "category": "invalid",
+      "input": "../corpus/libpng/inputs/invalid-no-plte.png",
+      "oracle": "../oracles/libpng/invalid-no-plte.json",
+      "signature": null
+    },
+    {
+      "id": "invalid-bad-depth",
+      "category": "invalid",
+      "input": "../corpus/libpng/inputs/invalid-bad-depth.png",
+      "oracle": "../oracles/libpng/invalid-bad-depth.json",
+      "signature": null
+    },
+    {
+      "id": "poc-bit1-256pal",
+      "category": "original",
+      "input": "../corpus/libpng/inputs/poc-bit1-256pal.png",
+      "oracle": "../oracles/libpng/poc-bit1-256pal.json",
+      "signature": {
+        "error_type": "heap-buffer-overflow",
+        "location": "src/pnginfo.c:copy_palette",
+        "key": "WRITE"
+      }
+    },
+    {
+      "id": "poc-bit2-256pal",
+      "category": "original",
+      "input": "../corpus/libpng/inputs/poc-bit2-256pal.png",
+      "oracle": "../oracles/libpng/poc-bit2-256pal.json",
+      "signature": {
+        "error_type": "heap-buffer-overflow",
+        "location": "src/pnginfo.c:copy_palette",
+        "key": "WRITE"
+      }
+    }
+  ],
+  "corpus_dir": "../corpus/libpng/regressions",
+  "analyzers": [],
+  "minimization": {
+    "max_attempts": 400,
+    "wall_seconds": 1200
+  }
+}

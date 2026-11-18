@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "provenance": {
+    "source": "oracles/libpng/SPEC.md#Rendering",
+    "independent": true
+  },
+  "exit_code": 0,
+  "stdout": {
+    "mode": "exact",
+    "base64": "T0sgMSAxIDggMyAyNTYK"
+  },
+  "stderr": {
+    "mode": "exact",
+    "base64": ""
+  }
+}
